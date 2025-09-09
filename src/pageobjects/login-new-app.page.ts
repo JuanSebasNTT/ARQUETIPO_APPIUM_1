@@ -1,52 +1,55 @@
-import { $ } from '@wdio/globals';
+import { loginSelectors } from '../selectors/login-selectors';
 
 class LoginNewAppPage {
-    // Selectores específicos de la nueva aplicación
-    get usuarioInput() {
-        return $('//android.widget.FrameLayout[@resource-id="android:id/content"]/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[3]/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[1]/android.widget.FrameLayout/android.view.ViewGroup/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.EditText');
+    
+    // Método para ingresar al login
+    async navigateToLogin() {
+        const signInButton = await $(loginSelectors.signIn);
+        await signInButton.click();
+        await browser.pause(1000);
     }
 
-    get contrasenaInput() {
-        return $('//android.widget.FrameLayout[@resource-id="android:id/content"]/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[3]/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[2]/android.widget.FrameLayout/android.view.ViewGroup/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.EditText');
-    }
-
-    get ingresarButton() {
-        return $('//android.widget.Button[@text="Ingresar"]');
-    }
-
-    get codigoConfirmacion() {
-        return $('//android.widget.TextView[@text="Código de confirmación"]');
-    }
-
-    // Acciones
+    // Método para ingresar username
     async enterUsername(username: string) {
-        const input = await this.usuarioInput;
-        await input.waitForDisplayed({ timeout: 60000 });
-        await input.clearValue();
-        await input.click();
-        await browser.keys(username);
+        await this.navigateToLogin();
+        const usuarioField = await $(loginSelectors.usuario);
+        await usuarioField.setValue(username);
     }
 
+    // Método para ingresar password
     async enterPassword(password: string) {
-        const input = await this.contrasenaInput;
-        await input.waitForDisplayed({ timeout: 60000 });
-        await input.clearValue();
-        await input.click();
-        await browser.keys(password);
+        const contrasenaField = await $(loginSelectors.contrasena);
+        await conttrasenaField.setValue(password);
     }
 
+    // Método para hacer clic en login (necesitarás agregar este selector)
     async clickLogin() {
-        const button = await this.ingresarButton;
-        await button.waitForDisplayed({ timeout: 60000 });
-        await button.click();
+        // Asumiendo que necesitas agregar un selector para el botón de login
+        const loginButton = await $('//android.widget.Button[@text="Iniciar sesión"]');
+        await loginButton.click();
     }
 
+    // Método para verificar si se muestra OTP
     async isOTPDisplayed(): Promise<boolean> {
         try {
-            const otpScreen = await this.codigoConfirmacion;
-            return await otpScreen.waitForDisplayed({ timeout: 60000 });
+            // Asumiendo que necesitas un selector para el campo OTP
+            const otpField = await $(loginSelectors.respuesta); // Usando el selector de respuesta para OTP
+            return await otpField.isDisplayed();
         } catch (error) {
             return false;
+        }
+    }
+
+    // Método para manejar errores de sesión
+    async getSessionError(): Promise<string> {
+        try {
+            const errorElement = await $(loginSelectors.errorSesion);
+            if (await errorElement.isDisplayed()) {
+                return await errorElement.getText();
+            }
+            return '';
+        } catch (error) {
+            return '';
         }
     }
 }
