@@ -1,0 +1,7 @@
+{
+  "validLogin": {
+    "username": "tomsmith@mail.com",
+    "password": "SuperSecretPassword",
+    "expectedMessage": "You are logged in"
+  }
+}

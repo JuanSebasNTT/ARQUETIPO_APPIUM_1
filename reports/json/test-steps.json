@@ -1,0 +1,34 @@
+{
+  "Login con credenciales válidas": [
+    {
+      "timestamp": "2025-09-03T19:07:48.119Z",
+      "action": "Abrir menú principal"
+    },
+    {
+      "timestamp": "2025-09-03T19:07:49.953Z",
+      "action": "Captura después de abrir login",
+      "screenshot": {
+        "timestamp": "2025-09-03T19:07:49.953Z",
+        "action": "Screenshot: after-open-login",
+        "screenshot": "reports\\screenshots\\after-open-login-2025-09-03T19-07-49.150Z.png"
+      }
+    },
+    {
+      "timestamp": "2025-09-03T19:07:49.953Z",
+      "action": "Ingresar username: [object Object]"
+    },
+    {
+      "timestamp": "2025-09-03T19:07:52.868Z",
+      "action": "Captura después de ingresar username",
+      "screenshot": {
+        "timestamp": "2025-09-03T19:07:52.868Z",
+        "action": "Screenshot: after-enter-username",
+        "screenshot": "reports\\screenshots\\after-enter-username-2025-09-03T19-07-51.945Z.png"
+      }
+    },
+    {
+      "timestamp": "2025-09-03T19:07:52.868Z",
+      "action": "Ingresar password: *******************"
+    }
+  ]
+}

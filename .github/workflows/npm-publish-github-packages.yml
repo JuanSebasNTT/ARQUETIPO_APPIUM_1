@@ -1,0 +1,138 @@
+name: Appium Tests with Reports
+
+on:  
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Show project structure
+      run: |
+        echo "📁 Estructura del proyecto:"
+        ls -la
+        echo ""
+        echo "📄 Contenido de package.json:"
+        cat package.json || echo "❌ No se pudo leer package.json"
+        echo ""
+        echo "🔧 Scripts disponibles:"
+        npm run || echo "❌ No se pudieron listar scripts"
+      
+    - name: Create reports directories
+      run: |
+        mkdir -p reports
+        mkdir -p reports/json
+        mkdir -p reports/screenshots
+      
+    - name: Run login tests
+      run: npx wdio config/wdio.conf.ts --spec "src/test/specs/login.test.ts"
+      env:
+        BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+        BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+        
+    - name: Check if json-to-html is available
+      run: |
+        if npx json-to-html --version 2>/dev/null; then
+          echo "✅ json-to-html está disponible"
+          npx json-to-html ./reports/json/*.json --output ./reports/test-report.html
+        else
+          echo "⚠️ json-to-html no está disponible, generando reporte básico..."
+          echo "<html><body><h1>Test Report</h1><p>Generated at $(date)</p></body></html>" > ./reports/basic-report.html
+        fi
+        
+    - name: Run custom report scripts if they exist
+      run: |
+        if [ -f "reports/generate-report.mjs" ]; then
+          echo "📊 Ejecutando generate-report.mjs..."
+          node reports/generate-report.mjs
+        else
+          echo "ℹ️ generate-report.mjs no encontrado"
+        fi
+        
+        if [ -f "reports/clean-json.mjs" ]; then
+          echo "🧹 Ejecutando clean-json.mjs..."
+          node reports/clean-json.mjs
+        else
+          echo "ℹ️ clean-json.mjs no encontrado"
+        fi
+        
+    - name: List all generated files
+      run: |
+        echo "📁 Contenido de reports/:"
+        find reports/ -type f 2>/dev/null | head -20 || echo "No se encontraron archivos en reports/"
+        
+    - name: Upload HTML reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: appium-html-reports
+        path: reports/*.html
+        retention-days: 30
+        
+    - name: Upload JSON reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: appium-json-reports
+        path: reports/json/
+        retention-days: 30
+        
+    - name: Upload screenshots
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: appium-screenshots
+        path: reports/screenshots/
+        retention-days: 30
+        
+    - name: Upload custom files
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: appium-custom-data
+        path: |
+          reports/*.mjs
+          reports/*.json
+          reports/steps.json
+        retention-days: 30
+        
+    - name: Generate GitHub Summary
+      if: always()
+      run: |
+        echo "# 📊 Appium Test Execution Report" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Fecha de ejecución:** $(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_STEP_SUMMARY
+        echo "**Workflow:** [$GITHUB_WORKFLOW]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Verificar resultados
+        if [ "${{ job.status }}" = "success" ]; then
+          echo "## ✅ **Resultado: ÉXITO**" >> $GITHUB_STEP_SUMMARY
+          echo "Todos los tests pasaron correctamente." >> $GITHUB_STEP_SUMMARY
+        else
+          echo "## ❌ **Resultado: FALLO**" >> $GITHUB_STEP_SUMMARY
+          echo "Algunos tests han fallado. Revisa los artifacts para más detalles." >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "## 📦 Artifacts Generados:" >> $GITHUB_STEP_SUMMARY
+        echo "- [HTML Reports](https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)" >> $GITHUB_STEP_SUMMARY
+        echo "- [JSON Results](https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)" >> $GITHUB_STEP_SUMMARY
+        echo "- [Screenshots](https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)" >> $GITHUB_STEP_SUMMARY
+        echo "- [Custom Data](https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)" >> $GITHUB_STEP_SUMMARY

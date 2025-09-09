@@ -1,0 +1,70 @@
+{
+  "suite": "Login tests",
+  "test": "Login con credenciales válidas",
+  "steps": [
+    {
+      "timestamp": "2025-09-09T18:09:46.079Z",
+      "action": "Cargado caso de prueba desde Excel"
+    },
+    {
+      "timestamp": "2025-09-09T18:09:46.844Z",
+      "action": "Screenshot: before-test-start",
+      "screenshot": "screenshots/before-test-start-2025-09-09T18-09-46-842Z.png"
+    },
+    {
+      "timestamp": "2025-09-09T18:09:47.146Z",
+      "action": "Abrir menú principal"
+    },
+    {
+      "timestamp": "2025-09-09T18:09:48.965Z",
+      "action": "Screenshot: after-open-login",
+      "screenshot": "screenshots/after-open-login-2025-09-09T18-09-48-962Z.png"
+    },
+    {
+      "timestamp": "2025-09-09T18:09:48.965Z",
+      "action": "Ingresar username: [object Object]"
+    },
+    {
+      "timestamp": "2025-09-09T18:09:51.931Z",
+      "action": "Screenshot: after-enter-username",
+      "screenshot": "screenshots/after-enter-username-2025-09-09T18-09-51-926Z.png"
+    },
+    {
+      "timestamp": "2025-09-09T18:09:51.931Z",
+      "action": "Ingresar password: *******************"
+    },
+    {
+      "timestamp": "2025-09-09T18:09:55.335Z",
+      "action": "Screenshot: after-enter-password",
+      "screenshot": "screenshots/after-enter-password-2025-09-09T18-09-55-332Z.png"
+    },
+    {
+      "timestamp": "2025-09-09T18:09:55.335Z",
+      "action": "Hacer click en login"
+    },
+    {
+      "timestamp": "2025-09-09T18:09:58.773Z",
+      "action": "Screenshot: after-login-click",
+      "screenshot": "screenshots/after-login-click-2025-09-09T18-09-58-769Z.png"
+    },
+    {
+      "timestamp": "2025-09-09T18:09:58.773Z",
+      "action": "Validar alerta de éxito"
+    },
+    {
+      "timestamp": "2025-09-09T18:09:59.175Z",
+      "action": "No se mostró alerta, validando mensaje en pantalla..."
+    },
+    {
+      "timestamp": "2025-09-09T18:10:00.146Z",
+      "action": "Screenshot: no-alert-displayed",
+      "screenshot": "screenshots/no-alert-displayed-2025-09-09T18-10-00-143Z.png"
+    },
+    {
+      "timestamp": "2025-09-09T18:10:01.076Z",
+      "action": "Screenshot: test-completed",
+      "screenshot": "screenshots/test-completed-2025-09-09T18-10-01-070Z.png"
+    }
+  ],
+  "timestamp": "2025-09-09T18:09:26.555Z"
+}
